@@ -3,7 +3,8 @@ import { useVaultStore } from "@/store/vaultStore"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Lock, Unlock, KeyRound, Plus, Trash2 } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Shield, Lock, Unlock, KeyRound, Plus, Trash2, Github, EyeOff, Server } from "lucide-react"
 import { toast } from "sonner"
 
 export function VaultManager() {
@@ -75,7 +76,7 @@ export function VaultManager() {
                                 : "Create a master passphrase. This will be used to encrypt all your credentials locally."}
                         </CardDescription>
                     </CardHeader>
-                    <form onSubmit={hasVault ? handleUnlock : handleInit} className="px-6 pb-8 space-y-6">
+                    <form onSubmit={hasVault ? handleUnlock : handleInit} className="px-6 pb-6 space-y-6">
                         <div className="relative group">
                             <Input
                                 type="password"
@@ -114,6 +115,49 @@ export function VaultManager() {
                             {loading ? "Processing..." : (hasVault ? <><Unlock className="w-5 h-5 mr-2" /> Unlock Vault</> : <><KeyRound className="w-5 h-5 mr-2" /> Create Vault</>)}
                         </Button>
                     </form>
+
+                    {/* Trust Indicators */}
+                    <div className="px-6 pb-8">
+                        <TooltipProvider delayDuration={100}>
+                            <div className="flex items-center justify-center gap-4 text-muted-foreground/70">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <a href="https://github.com/Dissociable/OutlookReader" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-[11px] font-medium hover:text-primary transition-colors cursor-pointer">
+                                            <Github className="w-3.5 h-3.5" />
+                                            <span>Open Source</span>
+                                        </a>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom" className="max-w-[250px] text-center">
+                                        <p>This project is 100% open source. You can transparently inspect the code to verify your credentials are safe.</p>
+                                    </TooltipContent>
+                                </Tooltip>
+
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div className="flex items-center gap-1.5 text-[11px] font-medium hover:text-primary transition-colors cursor-help">
+                                            <EyeOff className="w-3.5 h-3.5" />
+                                            <span>No Logging</span>
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom" className="max-w-[250px] text-center">
+                                        <p>We do not track, log, or store your credentials remotely. Everything remains encrypted locally in your browser.</p>
+                                    </TooltipContent>
+                                </Tooltip>
+
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div className="flex items-center gap-1.5 text-[11px] font-medium hover:text-primary transition-colors cursor-help">
+                                            <Server className="w-3.5 h-3.5" />
+                                            <span>Direct API</span>
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom" className="max-w-[260px] text-center">
+                                        <p>Excluding one proxy request to bypass CORS for token retrieval, all requests connect directly to the Microsoft Graph API.</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
+                        </TooltipProvider>
+                    </div>
                 </Card>
             </div>
         )

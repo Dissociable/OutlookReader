@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { RefreshCcw, MailX, Inbox, Search } from "lucide-react"
 import { isToday } from "date-fns"
-import { Link, Outlet, useParams, useLocation } from "react-router-dom"
+import { Link, Outlet, useParams, useLocation, Navigate } from "react-router-dom"
 
 export function InboxPage() {
-    const { isLocked, activeAccountId, accounts } = useVaultStore()
+    const { hasVault, isLocked, activeAccountId, accounts } = useVaultStore()
     const { getInbox, hasActiveAccount } = useGraph()
     const { id: selectedMessageId } = useParams()
     const location = useLocation()
@@ -56,16 +56,8 @@ export function InboxPage() {
 
     // CSS media queries handle responsiveness natively now.
 
-    if (isLocked || !hasActiveAccount || accounts.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full text-center p-6 bg-muted/10 w-full">
-                {isLocked ? <ShieldIcon /> : <MailX className="w-12 h-12 text-muted-foreground opacity-50 mb-4" />}
-                <h2 className="text-2xl font-semibold mt-4 tracking-tight">{isLocked ? "Vault is Locked" : "No Active Account"}</h2>
-                <p className="text-muted-foreground mt-2 max-w-sm">
-                    {isLocked ? "Please unlock your vault in the sidebar to view your inbox." : "Import or select an account from the vault to view emails."}
-                </p>
-            </div>
-        )
+    if (!hasVault || isLocked || !hasActiveAccount || accounts.length === 0) {
+        return <Navigate to="/vault" replace />
     }
 
     return (
@@ -191,11 +183,5 @@ export function InboxPage() {
                 </div>
             )}
         </div>
-    )
-}
-
-function ShieldIcon() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground opacity-50"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" /></svg>
     )
 }
