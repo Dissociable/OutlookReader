@@ -139,13 +139,15 @@ export function MessageDetailPage() {
                     {/* Body content */}
                     <div className="px-6 py-8 md:px-10 pb-20">
                         {viewMode === "html" ? (
-                            <div
-                                className="prose prose-sm md:prose-base dark:prose-invert max-w-none 
-                             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                             prose-p:leading-relaxed prose-headings:font-semibold
-                             break-words"
-                                dangerouslySetInnerHTML={{ __html: cleanHtml }}
-                            />
+                            <div className="bg-white text-gray-900 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                                <div
+                                    className="prose prose-sm md:prose-base max-w-none p-4 sm:p-6 sm:px-8
+                                 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
+                                 prose-p:leading-relaxed prose-headings:font-semibold
+                                 break-words"
+                                    dangerouslySetInnerHTML={{ __html: cleanHtml }}
+                                />
+                            </div>
                         ) : (
                             <div className="bg-muted/30 p-4 rounded-xl border border-border/50 overflow-x-auto text-xs font-mono whitespace-pre-wrap break-all text-muted-foreground">
                                 {message.bodyHtmlRaw}
