@@ -19,5 +19,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/token/, '')
       }
     }
-  }
+  },
+  base: process.env.VITE_BASE_PATH || "/",
 })
