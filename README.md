@@ -90,30 +90,29 @@ VITE_USE_OAUTH_PROXY=true
 VITE_USE_OAUTH_PROXY=false
 ```
 
-## Deployment
+## Deployment & CORS Limitations
 
-OutlookReader is a pure static web application designed to be served from any static file host. React Router is configured with Hash Routing (`/#/`) to ensure it works natively without server-side rewrite rules.
+While OutlookReader is designed as a static client, **Microsoft Graph's `/token` endpoint strictly enforces CORS headers**. This means that in 90% of cases, pure static hosting (like GitHub Pages) will fail to exchange refresh tokens because your browser will block the cross-origin request.
 
-### GitHub Pages (Automated via Actions)
-The repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically builds and deploys to GitHub Pages when you push to the `main` branch. 
-1. In your GitHub repository settings, go to **Pages**.
-2. Under **Build and deployment**, select **GitHub Actions** as the source.
-3. Push to `main` and the workflow will handle the rest.
+Therefore, **it is highly recommended to deploy OutlookReader using a provider that supports Serverless Functions or Edge Proxies** so you can run the `/api/token` route as a backend proxy.
 
-### Netlify
-A `netlify.toml` file is included in the project root with the correct build command and security headers.
+### 1. Vercel (Recommended - Free Tier)
+Vercel is the easiest way to deploy both the static React frontend and the necessary `/api/token` proxy.
+1. Import the project into your Vercel dashboard.
+2. The framework preset should default to **Vite**.
+3. Create an `api/token.js` or `api/token.ts` file in your repository root to forward the token request to `https://login.microsoftonline.com/common/oauth2/v2.0/token`.
+4. Ensure your repository settings set the environment variable: `VITE_USE_OAUTH_PROXY=true`.
+5. Vercel will automatically host your frontend and seamlessly proxy the token requests without CORS issues.
+
+### 2. Netlify (Alternative)
+Netlify also supports Edge Functions and standard Functions which can act as your proxy.
 1. Connect your repository to Netlify.
-2. Netlify will automatically detect the configuration and deploy the `dist` directory.
+2. Create a `netlify/functions/token.js` handler to forward the OAuth requests.
+3. Update your `netlify.toml` to rewrite `/api/token` to your new function.
+4. Set the `VITE_USE_OAUTH_PROXY=true` environment variable.
 
-### Vercel
-A `vercel.json` file is included to configure the static export routing and headers.
-1. Import the project in your Vercel dashboard.
-2. The framework preset should default to **Vite**. Vercel will build and deploy the application.
-
-### Cloudflare Pages
-A `wrangler.toml` file is included for Cloudflare.
-1. Connect your repository to Cloudflare Pages.
-2. Ensure the build command is `pnpm build` and the output directory is set to `dist`.
+### Legacy Static Hosting (GitHub Pages / Cloudflare Pages)
+If you must use pure static hosting (e.g., GitHub Pages), you *must* have an Entra ID application configured perfectly as a "Single-page application" that explicitly allows your GitHub Pages Origin. If you cannot configure this (or if CORS still blocks you), you will not be able to fetch emails.
 
 ### Manual Build
 To build the application manually:

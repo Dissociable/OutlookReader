@@ -5,6 +5,10 @@
     "cleanUrls": true,
     "rewrites": [
         {
+            "source": "/api/token",
+            "destination": "/api/token.ts"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
