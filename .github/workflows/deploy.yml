@@ -39,9 +39,10 @@ jobs:
       - name: Build with Vite
         run: pnpm build
         env:
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_BASE_PATH: "/${{ github.event.repository.name }}/"
+          VITE_USE_OAUTH_PROXY: "${{ vars.VITE_USE_OAUTH_PROXY || secrets.VITE_USE_OAUTH_PROXY || 'false' }}"
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: './dist'
       - name: Deploy to GitHub Pages
